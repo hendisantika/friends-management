@@ -8,10 +8,6 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 
 
-
-
-
-
 /**
  * Created by hendisantika on 7/12/17.
  */
@@ -54,22 +50,41 @@ class FriendController @Autowired constructor(val fr: FriendRepo) {
 //
 //    }
 
-    @GetMapping("/api/v1/friends2")
+    @GetMapping("/api/v1/friends")
     @ResponseBody
     fun listAll(): List<MutableIterable<Friend>> {
         val data = this.fr.findAll()
 
-        if (data != null){
+        if (data != null) {
             log.info("Getting All Friends Data ...")
             return listOf(data)
-        }else{
+        } else {
             log.info("All Friends Data NULL ...")
             return listOf(data as Nothing)
         }
 
     }
 
-    
+    @PostMapping("/api/v1/friends/find")
+    fun getFriendsByEmail(@RequestBody email: String): List<ArrayList<String>?> {
+        val data = listOf(fr.findOne(email))
+        val number = fr.findOne(email)
+        log.info("Data -> $data")
+        log.info("Jumlah -> $number")
+
+//        val jml = data.count { it.equals("email") }
+//        log.info("Jumlah Data --> $jml")
+
+        val map = mapOf(
+                "success" to true,
+                "friends" to data,
+                "count" to 1
+        )
+
+        return data.map { it.friends  }
+
+
+    }
 
 
 }
