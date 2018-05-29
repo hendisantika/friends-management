@@ -1,10 +1,15 @@
 package com.hendisantika.friends.management.controller
 
 import com.hendisantika.friends.management.domain.Friend
+import com.hendisantika.friends.management.dto.FriendsDTO
 import com.hendisantika.friends.management.repository.FriendRepo
-import org.apache.log4j.LogManager
+import org.apache.logging.log4j.LogManager
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.RestController
 import java.util.*
 
 
@@ -57,6 +62,7 @@ class FriendController @Autowired constructor(val fr: FriendRepo) {
 
         if (data != null) {
             log.info("Getting All Friends Data ...")
+            log.info("Data $data")
             return listOf(data)
         } else {
             log.info("All Friends Data NULL ...")
@@ -66,9 +72,9 @@ class FriendController @Autowired constructor(val fr: FriendRepo) {
     }
 
     @PostMapping("/api/v1/friends/find")
-    fun getFriendsByEmail(@RequestBody email: String): List<ArrayList<String>?> {
-        val data = listOf(fr.findOne(email))
-        val number = fr.findOne(email)
+    fun getFriendsByEmail(@RequestBody email: String): FriendsDTO {
+        val data = listOf(fr.findById(email))
+        val number = fr.findById(email)
         log.info("Data -> $data")
         log.info("Jumlah -> $number")
 
@@ -81,7 +87,10 @@ class FriendController @Autowired constructor(val fr: FriendRepo) {
                 "count" to 1
         )
 
-        return data.map { it.friends  }
+
+//        return data.map { it.friends  }
+        val dt = FriendsDTO(true, data, 1)
+        return dt
 
 
     }

@@ -1,12 +1,19 @@
 package com.hendisantika.friends.management.domain
 
-import java.util.*
 import javax.persistence.Entity
+import javax.persistence.FetchType
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 
 
-/**
- * Created by hendisantika on 7/12/17.
- */
 @Entity
-data class Friend (@Id var friends: ArrayList<String>? = null)
+data class Friend(
+        @Id @GeneratedValue(strategy = GenerationType.AUTO)
+        var id: Long,
+        var name: String,
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")
+        var user: User)
