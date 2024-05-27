@@ -1,7 +1,7 @@
 buildscript {
 	ext {
 		kotlinVersion = '1.2.40'
-		springBootVersion = '3.2.9'
+		springBootVersion = '3.3.0'
 	}
 	repositories {
 		mavenCentral()
@@ -24,12 +24,12 @@ apply plugin: "io.spring.dependency-management"
 
 version = '0.0.1-SNAPSHOT'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 21
 compileKotlin {
-	kotlinOptions.jvmTarget = "1.8"
+	kotlinOptions.jvmTarget = "21"
 }
 compileTestKotlin {
-	kotlinOptions.jvmTarget = "1.8"
+	kotlinOptions.jvmTarget = "21"
 }
 
 repositories {
@@ -48,5 +48,5 @@ dependencies {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
+    gradleVersion = '8.7'
 }
