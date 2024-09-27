@@ -1,7 +1,7 @@
 buildscript {
 	ext {
 		kotlinVersion = '1.2.40'
-		springBootVersion = '3.3.9'
+		springBootVersion = '3.4.0'
 	}
 	repositories {
 		mavenCentral()
@@ -48,5 +48,5 @@ dependencies {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '8.7'
+    gradleVersion = '8.8'
 }
