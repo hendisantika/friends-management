@@ -1,99 +1,42 @@
 package com.hendisantika.friends.management.controller
 
 import com.hendisantika.friends.management.domain.Friend
+import com.hendisantika.friends.management.dto.EmailRequest
 import com.hendisantika.friends.management.dto.FriendsDTO
 import com.hendisantika.friends.management.repository.FriendRepo
-import org.apache.logging.log4j.LogManager
-import org.springframework.beans.factory.annotation.Autowired
+import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
-
 
 /**
  * Created by hendisantika on 7/12/17.
  */
 @RestController
-class FriendController @Autowired constructor(val fr: FriendRepo) {
+@RequestMapping("/api/v1/friends")
+class FriendController(private val friendRepo: FriendRepo) {
 
-    val log = LogManager.getLogger(FriendController::class.java.name)
+    private val log = LoggerFactory.getLogger(FriendController::class.java)
 
-    @PostMapping("/api/v1/friends")
-    fun createFriends(@RequestBody friend: Friend?): Map<String, Boolean> {
-        if (friend != null) {
-            fr.save(friend)
-            log.info("Data $friend")
-            log.info("Data Friend save successfully!")
-            return Collections.singletonMap("success", true)
-        } else {
-            log.info("Data NULL")
-            log.info("Data Friend failed!")
-            return Collections.singletonMap("success", false)
-        }
-
+    @PostMapping
+    fun createFriends(@RequestBody friend: Friend): Map<String, Boolean> {
+        friendRepo.save(friend)
+        log.info("Data Friend {} saved successfully!", friend)
+        return mapOf("success" to true)
     }
 
-//    @GetMapping("/api/v1/friends")
-//    @ResponseBody
-//    fun getAll():  Map<String, JvmType.Object> {
-//        val data = fr.findAll()
-//        val frMap = mapOf(
-//                "success" to true,
-//                "created" to "created"
-//        )
-//
-//        if (data != null){
-//            log.info("Getting All Friends Data ...")
-//            return frMap
-//        }else{
-//            log.info("Data NULL")
-//            return Collections.singletonMap("success", false)
-//        }
-//
-//    }
-
-    @GetMapping("/api/v1/friends")
-    @ResponseBody
-    fun listAll(): List<MutableIterable<Friend>> {
-        val data = this.fr.findAll()
-
-        if (data != null) {
-            log.info("Getting All Friends Data ...")
-            log.info("Data $data")
-            return listOf(data)
-        } else {
-            log.info("All Friends Data NULL ...")
-            return listOf(data as Nothing)
-        }
-
+    @GetMapping
+    fun listAll(): List<Friend> {
+        log.info("Getting All Friends Data ...")
+        return friendRepo.findAll()
     }
 
-    @PostMapping("/api/v1/friends/find")
-    fun getFriendsByEmail(@RequestBody email: String): FriendsDTO {
-        val data = listOf(fr.findById(email))
-        val number = fr.findById(email)
-        log.info("Data -> $data")
-        log.info("Jumlah -> $number")
-
-//        val jml = data.count { it.equals("email") }
-//        log.info("Jumlah Data --> $jml")
-
-        val map = mapOf(
-                "success" to true,
-                "friends" to data,
-                "count" to 1
-        )
-
-
-//        return data.map { it.friends  }
-        val dt = FriendsDTO(true, data, 1)
-        return dt
-
-
+    @PostMapping("/find")
+    fun getFriendsByEmail(@RequestBody request: EmailRequest): FriendsDTO {
+        val friends = friendRepo.findByUserEmail(request.email).map { it.name }
+        log.info("Friends of {} -> {}", request.email, friends)
+        return FriendsDTO(success = true, friends = friends, count = friends.size)
     }
-
-
 }
